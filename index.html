@@ -33,6 +33,9 @@ a{color:inherit;text-decoration:none;}
 .reveal.in{opacity:1;transform:translateY(0);}
 @keyframes floatSlow{0%,100%{transform:translateY(0);}50%{transform:translateY(-18px);}}
 .blob{position:absolute;border-radius:9999px;filter:blur(90px);pointer-events:none;animation:floatSlow 9s ease-in-out infinite;}
+#bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}
+.bgblob{position:absolute;border-radius:9999px;filter:blur(110px);animation:bgfloat ease-in-out infinite;}
+@keyframes bgfloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(5%,-5%) scale(1.08);}}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ring{position:absolute;left:50%;top:50%;width:760px;height:760px;margin:-380px 0 0 -380px;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(244,201,74,.10),transparent 32%,transparent 60%,rgba(90,160,201,.08),transparent 92%);animation:spin 50s linear infinite;pointer-events:none;}
 .grid-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(243,240,231,.09) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,black 40%,transparent 80%);mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,black 40%,transparent 80%);}
@@ -61,6 +64,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
 </style>
 </head>
 <body>
+
+<div id="bgfx">
+  <div class="bgblob" style="width:640px;height:640px;top:-12%;left:-10%;background:radial-gradient(circle,rgba(244,201,74,.16),transparent 70%);animation-duration:26s;"></div>
+  <div class="bgblob" style="width:600px;height:600px;bottom:-18%;right:-10%;background:radial-gradient(circle,rgba(90,160,201,.16),transparent 70%);animation-duration:32s;animation-delay:-9s;"></div>
+  <div class="bgblob" style="width:460px;height:460px;top:40%;left:45%;background:radial-gradient(circle,rgba(244,201,74,.09),transparent 70%);animation-duration:38s;animation-delay:-16s;"></div>
+</div>
 
 <div class="grain"></div>
 <div id="glow"></div>
@@ -116,7 +125,7 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
 
         <div>
           <div style="font-size:20px;font-weight:700;margin-bottom:4px;">Գրիգոր Քարամյան</div>
-          <div class="mono" style="font-size:12px;color:var(--muted);line-height:1.6;">Նախկին Detection Engineer @ Digitain · Հիմնադիր, Phoenix IT School</div>
+          <div class="mono" style="font-size:12px;color:var(--muted);line-height:1.6;">Նախկին Detection Engineer @ Digitain · Հիմնադիր, Phoenix IT School · Համահեղինակ, code.mu (հայերեն տարբերակ)</div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:8px;">
