@@ -557,6 +557,16 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
   function goToSection(dir){
     var idx = SECTION_IDS.indexOf(currentSectionId);
     if (idx === -1) idx = 0;
+    if (dir > 0) {
+      var curEl = document.getElementById(SECTION_IDS[idx]);
+      var arrow = curEl && curEl.querySelector('.scroll-hint');
+      if (arrow) { arrow.click(); return; }
+    } else {
+      var prevIdx = idx - 1;
+      if (prevIdx < 0) prevIdx = 0;
+      var dot = dotLinks[prevIdx];
+      if (dot) { dot.click(); return; }
+    }
     var nextIdx = idx + dir;
     if (nextIdx < 0) nextIdx = 0;
     if (nextIdx > SECTION_IDS.length - 1) nextIdx = SECTION_IDS.length - 1;
@@ -640,7 +650,7 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
           } else if (msg.nav === 'prev') {
             goToSection(-1);
           }
-        } catch(err) {}
+        } catch(err) { console.error('remote msg error', err); }
       };
       remoteWs.onclose = function(){ setTimeout(connectRemote, 2000); };
       remoteWs.onerror = function(){ try { remoteWs.close(); } catch(e){} };
