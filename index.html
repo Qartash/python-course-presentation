@@ -536,9 +536,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
   document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
 
   var dotLinks = Array.prototype.slice.call(document.querySelectorAll('#dotnav a'));
+  var SECTION_IDS = ['hero', 'about', 'why', 'inside', 'lesson1', 'meet', 'test'];
+  var currentSectionId = SECTION_IDS[0];
   var sectionObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if (entry.isIntersecting) {
+        currentSectionId = entry.target.id;
         var id = '#' + entry.target.id;
         dotLinks.forEach(function(a){
           a.classList.toggle('active', a.getAttribute('href') === id);
@@ -546,10 +549,20 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
       }
     });
   }, { threshold: 0.5 });
-  ['hero', 'about', 'why', 'inside', 'lesson1', 'meet', 'test'].forEach(function(id){
+  SECTION_IDS.forEach(function(id){
     var el = document.getElementById(id);
     if (el) sectionObserver.observe(el);
   });
+
+  function goToSection(dir){
+    var idx = SECTION_IDS.indexOf(currentSectionId);
+    if (idx === -1) idx = 0;
+    var nextIdx = idx + dir;
+    if (nextIdx < 0) nextIdx = 0;
+    if (nextIdx > SECTION_IDS.length - 1) nextIdx = SECTION_IDS.length - 1;
+    var el = document.getElementById(SECTION_IDS[nextIdx]);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   var canvas = document.getElementById('net');
   var ctx = canvas.getContext('2d');
@@ -622,6 +635,10 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
           var msg = JSON.parse(e.data);
           if (typeof msg.d === 'number') {
             window.scrollBy({ top: msg.d, behavior: 'auto' });
+          } else if (msg.nav === 'next') {
+            goToSection(1);
+          } else if (msg.nav === 'prev') {
+            goToSection(-1);
           }
         } catch(err) {}
       };

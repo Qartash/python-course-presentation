@@ -93,10 +93,9 @@
     lastY = null;
   }, { passive: true });
 
-  var STEP = 320;
-  function sendStep(delta, btn){
+  function sendNav(dir, btn){
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ d: delta }));
+      ws.send(JSON.stringify({ nav: dir }));
     }
     btn.classList.add('pressed');
     setTimeout(function(){ btn.classList.remove('pressed'); }, 150);
@@ -105,10 +104,10 @@
   var btnUp = document.getElementById('btnUp');
   var btnDown = document.getElementById('btnDown');
 
-  btnUp.addEventListener('touchstart', function(e){ e.stopPropagation(); e.preventDefault(); sendStep(-STEP, btnUp); }, { passive: false });
-  btnDown.addEventListener('touchstart', function(e){ e.stopPropagation(); e.preventDefault(); sendStep(STEP, btnDown); }, { passive: false });
-  btnUp.addEventListener('click', function(e){ sendStep(-STEP, btnUp); });
-  btnDown.addEventListener('click', function(e){ sendStep(STEP, btnDown); });
+  btnUp.addEventListener('touchstart', function(e){ e.stopPropagation(); e.preventDefault(); sendNav('prev', btnUp); }, { passive: false });
+  btnDown.addEventListener('touchstart', function(e){ e.stopPropagation(); e.preventDefault(); sendNav('next', btnDown); }, { passive: false });
+  btnUp.addEventListener('click', function(e){ sendNav('prev', btnUp); });
+  btnDown.addEventListener('click', function(e){ sendNav('next', btnDown); });
 })();
 </script>
 </body>
