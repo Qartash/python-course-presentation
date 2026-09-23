@@ -17,6 +17,10 @@
   #arrow{font-size:34px;color:var(--accent2);animation:bob 1.6s ease-in-out infinite;}
   @keyframes bob{0%,100%{transform:translateY(-6px);opacity:.5;}50%{transform:translateY(6px);opacity:1;}}
   #flash{position:fixed;inset:0;background:var(--accent);opacity:0;pointer-events:none;transition:opacity .15s ease;}
+  .stepBtn{position:fixed;left:50%;transform:translateX(-50%);width:68px;height:68px;border-radius:50%;background:var(--panel,#12160f);border:1px solid var(--line);color:var(--fg);font-size:28px;display:flex;align-items:center;justify-content:center;z-index:10;transition:transform .12s ease,background .12s ease;}
+  .stepBtn:active,.stepBtn.pressed{transform:translateX(-50%) scale(0.88);background:var(--accent);color:var(--bg);}
+  #btnUp{top:24px;}
+  #btnDown{bottom:24px;}
 </style>
 </head>
 <body>
@@ -26,6 +30,8 @@
   <div id="hint">Սահեցրու մատը վերև/վար</div>
   <div id="sub">Presentation-ը կոլորի հետևից</div>
 </div>
+<button id="btnUp" class="stepBtn" aria-label="Վերև">↑</button>
+<button id="btnDown" class="stepBtn" aria-label="Վար">↓</button>
 <div id="flash"></div>
 <script>
 (function(){
@@ -86,6 +92,23 @@
   document.getElementById('pad').addEventListener('touchend', function(){
     lastY = null;
   }, { passive: true });
+
+  var STEP = 320;
+  function sendStep(delta, btn){
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ d: delta }));
+    }
+    btn.classList.add('pressed');
+    setTimeout(function(){ btn.classList.remove('pressed'); }, 150);
+  }
+
+  var btnUp = document.getElementById('btnUp');
+  var btnDown = document.getElementById('btnDown');
+
+  btnUp.addEventListener('touchstart', function(e){ e.stopPropagation(); e.preventDefault(); sendStep(-STEP, btnUp); }, { passive: false });
+  btnDown.addEventListener('touchstart', function(e){ e.stopPropagation(); e.preventDefault(); sendStep(STEP, btnDown); }, { passive: false });
+  btnUp.addEventListener('click', function(e){ sendStep(-STEP, btnUp); });
+  btnDown.addEventListener('click', function(e){ sendStep(STEP, btnDown); });
 })();
 </script>
 </body>
