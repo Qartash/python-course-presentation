@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python դասընթաց 12-16 տարեկանների համար</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#0a0e0c;
+  --panel:#12160f;
+  --fg:#f3f0e7;
+  --muted:#a3ab9f;
+  --accent:#f4c94a;
+  --accent2:#5aa0c9;
+  --line:rgba(243,240,231,0.12);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;background:var(--bg);}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Noto Sans Armenian','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+.eyebrow{letter-spacing:0.16em;text-transform:uppercase;}
+.pill{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:999px;padding:0.7em 1.3em;font-size:15px;transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;white-space:nowrap;min-height:44px;}
+.pill:hover{background:var(--fg);color:var(--bg);border-color:var(--fg);transform:translateY(-2px);}
+.pill:active{transform:translateY(0);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--accent);vertical-align:-0.1em;margin-left:2px;animation:blink 1s step-end infinite;}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+@keyframes floatSlow{0%,100%{transform:translateY(0);}50%{transform:translateY(-18px);}}
+.blob{position:absolute;border-radius:9999px;filter:blur(90px);pointer-events:none;animation:floatSlow 9s ease-in-out infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ring{position:absolute;left:50%;top:50%;width:760px;height:760px;margin:-380px 0 0 -380px;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(244,201,74,.10),transparent 32%,transparent 60%,rgba(90,160,201,.08),transparent 92%);animation:spin 50s linear infinite;pointer-events:none;}
+.grid-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(243,240,231,.09) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,black 40%,transparent 80%);mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,black 40%,transparent 80%);}
+.grain{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+#glow{position:fixed;top:0;left:0;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;background:radial-gradient(circle,rgba(244,201,74,.10),transparent 70%);pointer-events:none;z-index:3;mix-blend-mode:screen;opacity:0;transition:opacity .4s ease;}
+.section{position:relative;width:100%;padding:120px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.section-num{position:absolute;top:36px;right:28px;font-size:12px;letter-spacing:.1em;color:var(--muted);z-index:2;}
+.divider{position:relative;height:1px;width:100%;background:var(--line);overflow:visible;}
+.divider::after{content:'';position:absolute;top:-1px;left:0;height:1px;width:140px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:sweep 6s ease-in-out infinite;}
+@keyframes sweep{0%{left:-140px;}100%{left:100%;}}
+.container{width:100%;max-width:800px;margin:0 auto;position:relative;z-index:2;}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 22px;overflow:hidden;transition:transform .3s ease,border-color .3s ease;}
+.card:hover{transform:translateY(-4px);border-color:var(--accent);}
+.card .wm{position:absolute;right:-8px;bottom:-22px;font-size:74px;font-weight:800;color:var(--fg);opacity:.04;z-index:0;line-height:1;}
+.card>*{position:relative;z-index:1;}
+.card .icon{width:22px;height:22px;color:var(--accent2);margin-bottom:14px;}
+.nav-links a{transition:color .3s ease;color:var(--muted);position:relative;}
+nav{transition:background-color .4s ease,backdrop-filter .4s ease,border-color .4s ease;}
+nav.scrolled{background:rgba(10,14,12,.82) !important;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+@keyframes bounce{0%,100%{transform:translate(-50%,0);opacity:.55;}50%{transform:translate(-50%,8px);opacity:1;}}
+.scroll-hint{animation:bounce 2s ease-in-out infinite;}
+#dotnav{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:14px;}
+#dotnav a{width:8px;height:8px;border-radius:50%;background:var(--line);display:block;transition:background .3s ease,transform .3s ease;}
+#dotnav a.active{background:var(--accent);transform:scale(1.5);}
+.quote-mark{position:absolute;left:-6px;top:-58px;font-size:180px;font-weight:800;color:var(--accent);opacity:.08;z-index:0;font-style:normal;line-height:1;}
+h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
+@media (max-width:900px){#dotnav{display:none;}}
+@media (max-width:640px){.section{padding:88px 20px;}.nav-links{display:none !important;}.section-num{display:none;}}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div id="glow"></div>
+
+<div style="position:fixed;top:0;left:0;height:3px;width:100%;background:rgba(243,240,231,.08);z-index:60;">
+  <div id="progress" style="position:absolute;left:0;top:0;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));"></div>
+</div>
+
+<nav id="nav" style="position:fixed;top:0;left:0;width:100%;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;z-index:50;background:linear-gradient(to bottom,rgba(10,14,12,.85),rgba(10,14,12,0));">
+  <div class="mono" style="font-size:18px;font-weight:700;">Python<span style="color:var(--accent);">.դաս</span></div>
+  <div class="nav-links" style="display:flex;gap:28px;font-size:15px;">
+    <a href="#about">Ինձ մասին</a>
+    <a href="#why">Ինչու՞ code.mu</a>
+    <a href="#inside">Ինչ կա ներսում</a>
+    <a href="#lesson1">1-ին դասը</a>
+    <a href="#meet">Ծանոթություն</a>
+    <a href="#test">Թեստեր</a>
+  </div>
+</nav>
+
+<div id="dotnav">
+  <a href="#hero" aria-label="Հիմնական"></a>
+  <a href="#about" aria-label="Ինձ մասին"></a>
+  <a href="#why" aria-label="Ինչու՞ code.mu"></a>
+  <a href="#inside" aria-label="Ինչ կա ներսում"></a>
+  <a href="#lesson1" aria-label="1-ին դասը"></a>
+  <a href="#meet" aria-label="Ծանոթություն"></a>
+  <a href="#test" aria-label="Թեստեր"></a>
+</div>
+
+<section id="hero" class="section" style="min-height:100svh;padding-top:100px;">
+  <div class="grid-dots"></div>
+  <div class="ring"></div>
+  <div id="blob1" class="blob" style="width:480px;height:480px;top:-140px;right:-120px;background:radial-gradient(circle,rgba(244,201,74,.20),transparent 70%);"></div>
+  <div id="blob2" class="blob" style="width:420px;height:420px;bottom:-160px;left:-140px;background:radial-gradient(circle,rgba(90,160,201,.18),transparent 70%);"></div>
+  <div id="blob3" class="blob" style="width:280px;height:280px;top:40%;left:58%;background:radial-gradient(circle,rgba(244,201,74,.10),transparent 70%);animation-duration:13s;"></div>
+
+  <div class="container" style="text-align:left;">
+    <div class="eyebrow reveal in mono" style="font-size:13px;color:var(--accent2);margin-bottom:20px;">Python ծրագրավորում · 12–16 տարեկանների համար</div>
+    <h1 class="reveal in" style="font-size:clamp(30px,5.2vw,54px);line-height:1.15;margin-bottom:24px;transition-delay:.12s;"><span style="background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;">Python-ը</span> 12-16 տարեկանների համար՝<br>հասկանալի, հետաքրքիր, կենդանի։</h1>
+    <p class="reveal in" style="font-size:clamp(17px,2.2vw,21px);line-height:1.5;min-height:64px;max-width:640px;margin:0 0 28px 0;transition-delay:.24s;"><span id="typed"></span><span id="cursor" class="cursor"></span></p>
+    <div class="reveal in" style="display:flex;flex-wrap:wrap;gap:12px;transition-delay:.32s;">
+      <a href="#why" class="pill">Ինչու՞ հենց code.mu</a>
+      <a href="#inside" class="pill">Ինչ կա ներսում</a>
+    </div>
+  </div>
+
+  <a href="#about" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<section id="about" class="section" style="min-height:100vh;">
+  <div class="section-num mono">01 / ԻՆՁ ՄԱՍԻՆ</div>
+  <div class="container">
+    <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Ով եմ ես</div>
+    <h2 class="reveal" style="font-size:clamp(26px,4vw,38px);margin-bottom:32px;transition-delay:.08s;">Մի քանի խոսք իմ մասին</h2>
+
+    <div class="reveal" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:28px;transition-delay:.14s;">
+      <div id="avatar" style="width:96px;height:96px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px;text-align:center;flex-shrink:0;overflow:hidden;"><img src="grigor.jpg" alt="Գրիգոր Կարամյան" style="width:100%;height:100%;object-fit:cover;"></div>
+      <div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:4px;">Գրիգոր Կարամյան</div>
+        <div class="mono" style="font-size:13px;color:var(--muted);margin-bottom:10px;">Detection Engineer @ Digitain · Հիմնադիր, Phoenix IT School</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="https://www.linkedin.com/in/qartash/" target="_blank" rel="noopener" class="pill mono" style="font-size:13px;padding:0.5em 1.1em;min-height:36px;">LinkedIn →</a>
+          <a href="https://github.com/Qartash" target="_blank" rel="noopener" class="pill mono" style="font-size:13px;padding:0.5em 1.1em;min-height:36px;">GitHub →</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 20px 0;transition-delay:.22s;">Աշխատում եմ որպես Detection Engineer՝ տեղեկատվական անվտանգության մասնագետ Digitain ընկերությունում. զբաղվում եմ վտանգների հայտնաբերմամբ, անվտանգության միջադեպերի վերլուծությամբ և SOC գործառնություններով իրական կորպորատիվ միջավայրում։</p>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 20px 0;transition-delay:.3s;">2020-2024 թվականներին ես հիմնադրել և ղեկավարել եմ իմ սեփական ուսումնական կենտրոնը՝ Phoenix IT School, մինչև 50 սովորողով և 2-3 դասավանդողից բաղկացած թիմով, ինքս զբաղվելով ծրագրերի մշակմամբ և ամբողջ կրթական գործընթացով։ Այնպես որ սովորեցնելը ինձ համար նոր բան չէ։</p>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0;transition-delay:.38s;">Ծրագրավորումը, այդ թվում՝ Python-ը, իմ ամենօրյա աշխատանքային գործիքն է, ոչ թե պարզապես տեսական գիտելիք։</p>
+  </div>
+  <a href="#why" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<section id="why" class="section" style="min-height:100vh;">
+  <div class="section-num mono">02 / ԵՐԿՈՒ ՏԱՐԻ</div>
+  <div class="container">
+    <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Նախապատմություն</div>
+    <h2 class="reveal" style="font-size:clamp(26px,4vw,38px);margin-bottom:32px;transition-delay:.08s;">Ինչու՞ հենց code.mu</h2>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 20px 0;transition-delay:.16s;">3-4 տարի առաջ, փնտրելով լավագույն տարբերակը՝ ինչպես լավագույնս սովորեցնել Python 12-16 տարեկաններին, ես հանդիպեցի code.mu կայքին։ Առաջին իսկ պահից հասկացա՝ սա ճիշտ լուծումն է։</p>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 32px 0;transition-delay:.24s;">Ես անձամբ ստացա կայքի հեղինակի թույլտվությունը այն օգտագործելու համար։ Քանի որ կայքը սկզբում միայն ռուսերեն էր, ես ինքս՝ ձեռքով, Google Translate-ի և DeepL-ի օգնությամբ, ամբողջությամբ թարգմանեցի այն հայերեն։</p>
+    <div class="reveal" style="position:relative;border-left:3px solid var(--accent);padding:4px 0 4px 24px;transition-delay:.32s;">
+      <div class="quote-mark mono">"</div>
+      <p style="position:relative;font-size:clamp(20px,2.6vw,26px);line-height:1.5;font-style:italic;margin:0;">Ես գիտեմ այս կայքի ամեն մի բառը և ամեն մի տրամաբանությունը՝ ներսից։</p>
+    </div>
+  </div>
+  <a href="#inside" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<section id="inside" class="section" style="min-height:100vh;">
+  <div class="section-num mono">03 / ՌԵՍՈՒՐՍ</div>
+  <div class="container">
+    <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Ռեսուրսի ծավալը</div>
+    <h2 class="reveal" style="font-size:clamp(26px,4vw,38px);margin-bottom:16px;transition-delay:.08s;">Ինչ կա հարթակի ներսում</h2>
+    <p class="reveal" style="font-size:17px;line-height:1.6;color:var(--muted);margin:0 0 40px 0;max-width:600px;transition-delay:.16s;">Ամբողջական նյութեր, կառուցված մակարդակներով՝ սկսնակից մինչև առաջադեմ։</p>
+
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;">
+      <div class="card reveal" style="transition-delay:.2s;">
+        <div class="wm mono">208</div>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2 2 0 0 1 6 2.5h14v17H6a2 2 0 0 0-2 2Z"/><path d="M20 17H6a2 2 0 0 0-2 2"/></svg>
+        <div class="mono count" data-target="208" style="font-size:38px;font-weight:700;color:var(--accent);margin-bottom:8px;">0</div>
+        <div style="font-size:15px;line-height:1.5;">էջ «Հիմունքներ» բաժնում</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.28s;">
+        <div class="wm mono">129</div>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+        <div class="mono count" data-target="129" style="font-size:38px;font-weight:700;color:var(--accent);margin-bottom:8px;">0</div>
+        <div style="font-size:15px;line-height:1.5;">էջ «Առաջադեմ» մակարդակում</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.36s;">
+        <div class="wm mono">10×10</div>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+        <div class="mono" style="font-size:38px;font-weight:700;color:var(--accent);margin-bottom:8px;">10 × 10</div>
+        <div style="font-size:15px;line-height:1.5;">մակարդակ և թեստ՝ 100 առաջադրանքով լիարժեք ստուգման համար</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.44s;">
+        <div class="wm mono">?</div>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1.3 1-1.3 1.9v.3"/><path d="M12 17h.01"/></svg>
+        <div class="mono" style="font-size:38px;font-weight:700;color:var(--accent2);margin-bottom:8px;">+</div>
+        <div style="font-size:15px;line-height:1.5;">Հսկայական տեղեկատու՝ հարց ու պատասխանով</div>
+      </div>
+    </div>
+
+    <p class="reveal" style="font-size:15px;line-height:1.6;color:var(--muted);font-style:italic;margin:40px 0 0 0;transition-delay:.5s;">Առաջադրանքների, թեստերի ու նպատակների գործընթացի մասին կխոսենք առանձին։</p>
+  </div>
+  <a href="#lesson1" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<section id="lesson1" class="section" style="min-height:100svh;padding:0;position:relative;">
+  <div class="section-num mono" style="z-index:3;">04 / ԴԱՍ</div>
+  <canvas id="net" style="position:absolute;inset:0;width:100%;height:100%;display:block;"></canvas>
+  <div class="container" style="position:relative;z-index:2;text-align:center;">
+    <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:18px;">1-ին դասը</div>
+    <h2 class="reveal" style="font-size:clamp(30px,5vw,52px);line-height:1.25;margin-bottom:14px;transition-delay:.1s;">Ո՞վ է նստած<br>իմ դիմաց</h2>
+    <div class="reveal mono" style="font-size:14px;color:var(--muted);transition-delay:.2s;">(կպատմեմ ես ինքս)</div>
+  </div>
+  <a href="#meet" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;z-index:3;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<section id="meet" class="section" style="min-height:100vh;">
+  <div class="section-num mono">05 / ԾԱՆՈԹՈՒԹՅՈՒՆ</div>
+  <div class="container">
+    <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Փիլիսոփայություն</div>
+    <h2 class="reveal" style="font-size:clamp(26px,4vw,38px);margin-bottom:28px;transition-delay:.08s;">Ծանոթությունը՝ ամենակարևոր պահը</h2>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 20px 0;transition-delay:.16s;">Հենց առաջին դասից ես հատուկ ուշադրություն եմ դարձնում մեկ բանի վրա՝ ծանոթանալ նրանց հետ, ովքեր նստած են իմ դիմաց։ Ինքս ինձ պետք է ներկայացնեմ այնպես, որ մի փոքր ինտրիգայի մեջ գցեմ, հետաքրքրություն ստեղծեմ․ եթե հենց սկզբից չհետաքրքրես, հետո դա անելը շատ ավելի դժվար է լինում։ Հենց այդ հետաքրքրությունն է, որ հետագայում իրենք իրենց մոտիվացնում է։</p>
+
+    <div class="reveal" style="position:relative;border-left:3px solid var(--accent2);padding:4px 0 4px 24px;margin:0 0 40px 0;transition-delay:.24s;">
+      <p style="font-size:clamp(18px,2.2vw,22px);line-height:1.5;font-style:italic;margin:0;">Այս ողջ ներկայացման ընթացքում ես գիտակցաբար չեմ օգտագործում «երեխա» կամ «աշակերտ» բառերը։ Փորձը ցույց է տվել՝ դա բացասաբար է ազդում շփման վրա, իսկ շփումը ինձ համար ամենակարևորն է։</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:32px;">
+      <div class="card reveal" style="transition-delay:.2s;">
+        <div style="font-size:15px;line-height:1.6;"><b style="color:var(--accent);">Ո՞վ է նստած իմ դիմաց</b><br>Ոչ միայն անունը՝ այլև ով է նա, ինչով է հետաքրքրված, ինչպես գտնել ընդհանուր լեզու հենց նրա հետ, ոչ թե ընդհանրապես բոլորի հետ։</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.28s;">
+        <div style="font-size:15px;line-height:1.6;"><b style="color:var(--accent);">Ինչպե՞ս է հայտնվել այստեղ</b><br>Ում որոշումով, ինչ սպասումներով է եկել, ինչով է ընդհանրապես հետաքրքրված։</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.36s;">
+        <div style="font-size:15px;line-height:1.6;"><b style="color:var(--accent);">90% դեպքում</b><br>Նրանք իրենք չգիտեն, թե ինչու են եկել։ Այս հարցը պետք է փակվի հենց 1-ին դասին։</div>
+      </div>
+      <div class="card reveal" style="transition-delay:.44s;">
+        <div style="font-size:15px;line-height:1.6;"><b style="color:var(--accent);">Ժամանակը</b><br>Կախված է աշակերտների քանակից՝ երբեմն ամբողջ առաջին դասը տրամադրվում է ծանոթությանը, և դա նորմ է։</div>
+      </div>
+    </div>
+
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 20px 0;transition-delay:.5s;">Կարևոր է ցույց տալ իրական օրինակներ՝ ինչ եմ արել, ինչ նախագծեր ունեմ, ինչ գիտեմ կորպորատիվ միջավայրի մասին. և հասկանալ՝ իրենք ինչ գիտեն ծրագրավորողների մասին։</p>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0;transition-delay:.58s;">Շատ կարևոր է շոշափել նրանց սահմանները՝ կախված յուրաքանչյուր աշակերտից, հասկանալ՝ ինչպես են տիրապետում պարզագույն հմտություններին. կարողանում են արդյո՞ք ձևակերպել հարց, թե ինչպես նրանց դեպի դա հրել։</p>
+  </div>
+  <a href="#test" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<section id="test" class="section" style="min-height:100vh;">
+  <div class="section-num mono">06 / ՍՏՈՒԳՈՒՄ</div>
+  <div class="container">
+    <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Երկու թեստային առաջադրանք</div>
+    <h2 class="reveal" style="font-size:clamp(26px,4vw,38px);margin-bottom:28px;transition-delay:.08s;">Հասկանալու համար՝ ով է իմ դիմաց</h2>
+    <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 32px 0;transition-delay:.16s;">Այս ամենը հասկանալու համար ես նախատեսում եմ նվազագույնը 2 թեստային առաջադրանք։</p>
+
+    <div class="card reveal" style="margin-bottom:32px;transition-delay:.24s;">
+      <div class="mono" style="font-size:13px;color:var(--accent2);margin-bottom:10px;">ԹԵՍՏ 1</div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:10px;">Տրամաբանական թեստ</div>
+      <p style="font-size:16px;line-height:1.6;color:var(--muted);margin:0 0 18px 0;">Թեստ, որը կտա պատկերացում՝ ինչպես են նրանք մտածում։</p>
+      <a href="https://docs.google.com/forms/d/1FVVMiij8fr0gNsXMZ8tZ0uTnyMHxIwAvbKMxSALozoQ/edit" target="_blank" rel="noopener" class="pill mono" style="font-size:14px;">Բացել թեստը →</a>
+    </div>
+
+    <div class="reveal" style="position:relative;border-left:3px solid var(--accent);padding:4px 0 4px 24px;transition-delay:.32s;">
+      <div class="quote-mark mono">"</div>
+      <p style="position:relative;font-size:clamp(22px,3vw,30px);line-height:1.4;font-style:italic;margin:0 0 12px 0;">Ո՞րտեղ ես քեզ պատկերացնում 5-10 տարի անց</p>
+      <p style="position:relative;font-size:15px;line-height:1.6;color:var(--muted);font-style:normal;margin:0;">Հենց այս հարցին է, հնարավոր է, որ նրանք առաջին անգամ պատասխանում են հենց այստեղ՝ 1-ին դասին։</p>
+    </div>
+
+    <p class="reveal mono" style="font-size:14px;color:var(--muted);margin:40px 0 0 0;transition-delay:.5s;">Մնացածը ես ինքս ցույց կտամ ու կպատմեմ։</p>
+  </div>
+  <a href="#footer" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </a>
+</section>
+
+<div class="divider"></div>
+
+<footer id="footer" style="position:relative;border-top:1px solid var(--line);padding:32px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+  <div class="mono" style="font-size:14px;color:var(--muted);">Python<span style="color:var(--accent);">.դաս</span></div>
+  <div class="mono" style="font-size:13px;color:var(--muted);">(շարունակելի)</div>
+</footer>
+
+<script>
+(function(){
+  var fullText = "Ես անձամբ կվարեմ այս դասերը՝ քայլ առ քայլ, հենց այնպես, ինչպես ես եմ պատկերացնում, օրինակներով և իրական առաջադրանքներով՝";
+  var typedEl = document.getElementById('typed');
+  var cursorEl = document.getElementById('cursor');
+  var len = 0;
+  setTimeout(function(){
+    var iv = setInterval(function(){
+      len = Math.min(len + 1, fullText.length);
+      typedEl.textContent = fullText.slice(0, len);
+      if (len >= fullText.length) {
+        clearInterval(iv);
+        cursorEl.style.display = 'none';
+      }
+    }, 38);
+  }, 600);
+
+  var mx = 0.5, my = 0.5;
+  var blob1 = document.getElementById('blob1');
+  var blob2 = document.getElementById('blob2');
+  var blob3 = document.getElementById('blob3');
+  var glow = document.getElementById('glow');
+  var glowShown = false;
+  var raf1 = null;
+  window.addEventListener('mousemove', function(e){
+    mx = e.clientX / window.innerWidth;
+    my = e.clientY / window.innerHeight;
+    if (!glowShown) { glow.style.opacity = '1'; glowShown = true; }
+    glow.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+    if (raf1) return;
+    raf1 = requestAnimationFrame(function(){
+      raf1 = null;
+      blob1.style.transform = 'translate3d(' + ((mx - 0.5) * 30).toFixed(1) + 'px,' + ((my - 0.5) * 30).toFixed(1) + 'px,0)';
+      blob2.style.transform = 'translate3d(' + ((mx - 0.5) * -20).toFixed(1) + 'px,' + ((my - 0.5) * -20).toFixed(1) + 'px,0)';
+      blob3.style.transform = 'translate3d(' + ((mx - 0.5) * 45).toFixed(1) + 'px,' + ((my - 0.5) * 45).toFixed(1) + 'px,0)';
+    });
+  });
+
+  var progress = document.getElementById('progress');
+  var nav = document.getElementById('nav');
+  var raf2 = null;
+  function onScroll(){
+    if (raf2) return;
+    raf2 = requestAnimationFrame(function(){
+      raf2 = null;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+      progress.style.width = pct.toFixed(1) + '%';
+      if (window.scrollY > 40) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  function countUp(el){
+    var target = parseInt(el.getAttribute('data-target'), 10);
+    var start = performance.now();
+    var duration = 1200;
+    function tick(now){
+      var t = Math.min(1, (now - start) / duration);
+      var eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(eased * target);
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        var counter = entry.target.querySelector('.count');
+        if (counter) countUp(counter);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
+
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  var dotLinks = Array.prototype.slice.call(document.querySelectorAll('#dotnav a'));
+  var sectionObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        var id = '#' + entry.target.id;
+        navLinks.forEach(function(a){
+          a.style.color = a.getAttribute('href') === id ? 'var(--fg)' : 'var(--muted)';
+        });
+        dotLinks.forEach(function(a){
+          a.classList.toggle('active', a.getAttribute('href') === id);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+  ['hero', 'about', 'why', 'inside', 'lesson1', 'meet', 'test'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) sectionObserver.observe(el);
+  });
+
+  var canvas = document.getElementById('net');
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  function resizeCanvas(){
+    var rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  for (var i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25
+    });
+  }
+  function animateNetwork(){
+    var w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    var rect = canvas.getBoundingClientRect();
+    var px = mx * window.innerWidth - rect.left;
+    var py = my * window.innerHeight - rect.top;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+      var dx = p.x - px, dy = p.y - py;
+      var d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 140 && d > 0.01) {
+        p.x += (dx / d) * 0.4;
+        p.y += (dy / d) * 0.4;
+      }
+    }
+    for (var i2 = 0; i2 < particles.length; i2++) {
+      for (var j = i2 + 1; j < particles.length; j++) {
+        var a = particles[i2], b = particles[j];
+        var ddx = a.x - b.x, ddy = a.y - b.y;
+        var dist = Math.sqrt(ddx * ddx + ddy * ddy);
+        if (dist < 130) {
+          ctx.strokeStyle = 'rgba(244,201,74,' + (0.16 * (1 - dist / 130)).toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.fillStyle = 'rgba(243,240,231,.6)';
+    for (var k = 0; k < particles.length; k++) {
+      ctx.beginPath();
+      ctx.arc(particles[k].x, particles[k].y, 1.6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    requestAnimationFrame(animateNetwork);
+  }
+  requestAnimationFrame(animateNetwork);
+})();
+</script>
+</body>
+</html>
