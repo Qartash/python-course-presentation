@@ -611,6 +611,25 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
     requestAnimationFrame(animateNetwork);
   }
   requestAnimationFrame(animateNetwork);
+
+  var REMOTE_WS_URL = 'wss://python-course-remote-server.onrender.com';
+  var remoteWs = null;
+  function connectRemote(){
+    try {
+      remoteWs = new WebSocket(REMOTE_WS_URL);
+      remoteWs.onmessage = function(e){
+        try {
+          var msg = JSON.parse(e.data);
+          if (typeof msg.d === 'number') {
+            window.scrollBy({ top: msg.d, behavior: 'auto' });
+          }
+        } catch(err) {}
+      };
+      remoteWs.onclose = function(){ setTimeout(connectRemote, 2000); };
+      remoteWs.onerror = function(){ try { remoteWs.close(); } catch(e){} };
+    } catch(err) {}
+  }
+  connectRemote();
 })();
 </script>
 </body>

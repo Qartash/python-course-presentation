@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="hy">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Հեռակառավարում</title>
+<style>
+  :root{--bg:#0a0e0c;--fg:#f3f0e7;--muted:#a3ab9f;--accent:#f4c94a;--accent2:#5aa0c9;--line:rgba(243,240,231,0.14);}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;overflow:hidden;touch-action:none;user-select:none;}
+  #status{position:fixed;top:0;left:0;width:100%;padding:14px 18px;font-size:13px;letter-spacing:.04em;text-align:center;z-index:5;background:rgba(10,14,12,.9);border-bottom:1px solid var(--line);}
+  #status.ok{color:var(--accent);}
+  #status.bad{color:#e07a5f;}
+  #pad{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;}
+  #hint{font-size:20px;font-weight:700;text-align:center;padding:0 30px;}
+  #sub{font-size:14px;color:var(--muted);text-align:center;padding:0 30px;}
+  #arrow{font-size:34px;color:var(--accent2);animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(-6px);opacity:.5;}50%{transform:translateY(6px);opacity:1;}}
+  #flash{position:fixed;inset:0;background:var(--accent);opacity:0;pointer-events:none;transition:opacity .15s ease;}
+</style>
+</head>
+<body>
+<div id="status" class="bad">Կապվում ենք…</div>
+<div id="pad">
+  <div id="arrow">↕</div>
+  <div id="hint">Սահեցրու մատը վերև/վար</div>
+  <div id="sub">Presentation-ը կոլորի հետևից</div>
+</div>
+<div id="flash"></div>
+<script>
+(function(){
+  var WS_URL = 'wss://python-course-remote-server.onrender.com';
+  var statusEl = document.getElementById('status');
+  var flash = document.getElementById('flash');
+  var ws = null;
+  var lastY = null;
+  var pending = 0;
+  var sendScheduled = false;
+
+  function setStatus(text, ok){
+    statusEl.textContent = text;
+    statusEl.className = ok ? 'ok' : 'bad';
+  }
+
+  function connect(){
+    setStatus('Կապվում ենք…', false);
+    ws = new WebSocket(WS_URL);
+    ws.onopen = function(){ setStatus('Կապված է ✓', true); };
+    ws.onclose = function(){ setStatus('Կապը կտրվեց, կրկին փորձում ենք…', false); setTimeout(connect, 1500); };
+    ws.onerror = function(){ try { ws.close(); } catch(e){} };
+  }
+  connect();
+
+  function flashTouch(){
+    flash.style.opacity = '0.06';
+    setTimeout(function(){ flash.style.opacity = '0'; }, 120);
+  }
+
+  function scheduleSend(){
+    if (sendScheduled) return;
+    sendScheduled = true;
+    requestAnimationFrame(function(){
+      sendScheduled = false;
+      if (pending !== 0 && ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ d: pending }));
+        pending = 0;
+      }
+    });
+  }
+
+  document.getElementById('pad').addEventListener('touchstart', function(e){
+    lastY = e.touches[0].clientY;
+    flashTouch();
+  }, { passive: true });
+
+  document.getElementById('pad').addEventListener('touchmove', function(e){
+    var y = e.touches[0].clientY;
+    if (lastY !== null) {
+      var delta = (lastY - y) * 2.2;
+      pending += delta;
+      scheduleSend();
+    }
+    lastY = y;
+  }, { passive: true });
+
+  document.getElementById('pad').addEventListener('touchend', function(){
+    lastY = null;
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
