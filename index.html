@@ -16,8 +16,8 @@
   --line:rgba(243,240,231,0.12);
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;background:var(--bg);}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:'Noto Sans Armenian','Helvetica Neue',Arial,sans-serif;overflow-x:hidden;}
+html{scroll-behavior:smooth;background:var(--bg);height:100%;overflow:hidden;}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'Noto Sans Armenian','Helvetica Neue',Arial,sans-serif;height:100%;overflow:hidden;}
 html{scrollbar-width:none;-ms-overflow-style:none;}
 html::-webkit-scrollbar{display:none;width:0;height:0;}
 body::-webkit-scrollbar{display:none;width:0;height:0;}
@@ -42,6 +42,8 @@ a{color:inherit;text-decoration:none;}
 .grain{position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
 #glow{position:fixed;top:0;left:0;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;background:radial-gradient(circle,rgba(244,201,74,.10),transparent 70%);pointer-events:none;z-index:3;mix-blend-mode:screen;opacity:0;transition:opacity .4s ease;}
 .section{position:relative;width:100%;padding:120px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;}
+.slide{position:fixed;inset:0;width:100%;height:100%;z-index:1;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.slide.active{display:flex;}
 .section-num{position:absolute;top:36px;right:28px;font-size:12px;letter-spacing:.1em;color:var(--muted);z-index:2;}
 .divider{position:relative;height:1px;width:100%;background:var(--line);overflow:visible;}
 .divider::after{content:'';position:absolute;top:-1px;left:0;height:1px;width:140px;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:sweep 6s ease-in-out infinite;}
@@ -80,16 +82,16 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
 </div>
 
 <div id="dotnav">
-  <a href="#hero" aria-label="Հիմնական"></a>
-  <a href="#about" aria-label="Ինձ մասին"></a>
-  <a href="#why" aria-label="Ինչու՞ code.mu"></a>
-  <a href="#inside" aria-label="Ինչ կա ներսում"></a>
-  <a href="#lesson1" aria-label="1-ին դասը"></a>
-  <a href="#meet" aria-label="Ծանոթություն"></a>
-  <a href="#test" aria-label="Թեստեր"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(0)" aria-label="Հիմնական"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(1)" aria-label="Ինձ մասին"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(2)" aria-label="Ինչու՞ code.mu"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(3)" aria-label="Ինչ կա ներսում"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(4)" aria-label="1-ին դասը"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(5)" aria-label="Ծանոթություն"></a>
+  <a href="javascript:void(0)" onclick="goToSlide(6)" aria-label="Թեստեր"></a>
 </div>
 
-<section id="hero" class="section" style="min-height:100svh;">
+<section id="hero" class="section slide" style="min-height:100svh;">
   <div class="grid-dots"></div>
   <div class="ring"></div>
   <div id="blob1" class="blob" style="width:480px;height:480px;top:-140px;right:-120px;background:radial-gradient(circle,rgba(244,201,74,.20),transparent 70%);"></div>
@@ -106,14 +108,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
     </div>
   </div>
 
-  <a href="#about" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+  <a href="javascript:void(0)" onclick="nextSlide()" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </a>
 </section>
 
-<div class="divider"></div>
-
-<section id="about" class="section" style="min-height:100vh;">
+<section id="about" class="section slide" style="min-height:100vh;justify-content:flex-start;padding-top:140px;">
   <div class="section-num mono">01 / ԻՆՁ ՄԱՍԻՆ</div>
   <div class="container">
     <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Ով եմ ես</div>
@@ -151,14 +151,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
 
     </div>
   </div>
-  <a href="#why" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+  <a href="javascript:void(0)" onclick="nextSlide()" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </a>
 </section>
 
-<div class="divider"></div>
-
-<section id="why" class="section" style="min-height:100vh;">
+<section id="why" class="section slide" style="min-height:100vh;justify-content:flex-start;padding-top:140px;">
   <div class="section-num mono">02 / ԵՐԿՈՒ ՏԱՐԻ</div>
   <div class="container">
     <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Նախապատմություն</div>
@@ -172,14 +170,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
       <p style="position:relative;font-size:clamp(20px,2.6vw,26px);line-height:1.5;font-style:italic;margin:0;">Ես գիտեմ այս կայքի ամեն մի բառը և ամեն մի տառը՝ ներսից։ Ու վստահ եմ նրա որակի վրա։ Իսկ ինչ կա ներսում՞</p>
     </div>
   </div>
-  <a href="#inside" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+  <a href="javascript:void(0)" onclick="nextSlide()" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </a>
 </section>
 
-<div class="divider"></div>
-
-<section id="inside" class="section" style="min-height:100vh;">
+<section id="inside" class="section slide" style="min-height:100vh;justify-content:flex-start;padding-top:140px;">
   <div class="section-num mono">03 / ՌԵՍՈՒՐՍ</div>
   <div class="container">
     <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Ռեսուրսի ծավալը</div>
@@ -219,26 +215,22 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
 
     <p class="reveal" style="font-size:15px;line-height:1.6;color:var(--muted);font-style:italic;margin:40px 0 0 0;transition-delay:.5s;">Առաջադրանքների, թեստերի ու նպատակների գործընթացի մասին կխոսենք առանձին։</p>
   </div>
-  <a href="#lesson1" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+  <a href="javascript:void(0)" onclick="nextSlide()" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </a>
 </section>
 
-<div class="divider"></div>
-
-<section id="lesson1" class="section" style="min-height:100svh;padding:0;position:relative;">
+<section id="lesson1" class="section slide" style="min-height:100svh;padding:0;position:relative;">
   <div class="section-num mono" style="z-index:3;">04 / ԴԱՍ</div>
   <div class="container" style="position:relative;z-index:2;text-align:center;">
     <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:18px;">1-ին դասը</div>
     <h2 class="reveal" style="font-size:clamp(30px,5vw,52px);line-height:1.25;margin-bottom:14px;transition-delay:.1s;">Ո՞վ է նստած<br>իմ դիմաց</h2>  </div>
-  <a href="#meet" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;z-index:3;">
+  <a href="javascript:void(0)" onclick="nextSlide()" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;z-index:3;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </a>
 </section>
 
-<div class="divider"></div>
-
-<section id="meet" class="section" style="min-height:100vh;">
+<section id="meet" class="section slide" style="min-height:100vh;justify-content:flex-start;padding-top:140px;">
   <div class="section-num mono">05 / ԾԱՆՈԹՈՒԹՅՈՒՆ</div>
   <div class="container">
     <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Փիլիսոփայություն</div>
@@ -267,14 +259,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
     <p class="reveal" style="font-size:18px;line-height:1.75;margin:0 0 20px 0;transition-delay:.5s;">Կարևոր է ցույց տալ իրական օրինակներ՝ ինչ եմ արել, ինչ նախագծեր ունեմ, ինչ գիտեմ կորպորատիվ միջավայրի մասին. և հասկանալ՝ իրենք ինչ գիտեն ծրագրավորողների մասին։</p>
     <p class="reveal" style="font-size:18px;line-height:1.75;margin:0;transition-delay:.58s;">Շատ կարևոր է շոշափել նրանց սահմանները՝ կախված յուրաքանչյուր աշակերտից, հասկանալ՝ ինչպես են տիրապետում պարզագույն հմտություններին. կարողանում են արդյո՞ք ձևակերպել հարց, թե ինչպես նրանց դեպի դա հրել։</p>
   </div>
-  <a href="#test" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
+  <a href="javascript:void(0)" onclick="nextSlide()" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
   </a>
 </section>
 
-<div class="divider"></div>
-
-<section id="test" class="section" style="min-height:100vh;">
+<section id="test" class="section slide" style="min-height:100vh;justify-content:flex-start;padding-top:140px;">
   <div class="section-num mono">06 / ՍՏՈՒԳՈՒՄ</div>
   <div class="container">
     <div class="eyebrow reveal mono" style="font-size:13px;color:var(--accent2);margin-bottom:16px;">Երկու թեստային առաջադրանք</div>
@@ -445,18 +435,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
         <div style="font-size:17px;font-weight:700;line-height:1.4;margin-bottom:0;">Արդյո՞ք սպիտակ արջը մեղր է սիրում</div>
       </div>
 
+    <div style="border-top:1px solid var(--line);margin-top:40px;padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div class="mono" style="font-size:14px;color:var(--muted);">Python<span style="color:var(--accent);">.դաս</span></div>
+      <div class="mono" style="font-size:13px;color:var(--muted);">(շարունակելի)</div>
+    </div>
   </div>
-  <a href="#footer" class="scroll-hint" aria-label="Ոլորել ներքև" style="position:absolute;left:50%;bottom:28px;padding:10px;cursor:pointer;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-  </a>
 </section>
-
-<div class="divider"></div>
-
-<footer id="footer" style="position:relative;border-top:1px solid var(--line);padding:32px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-  <div class="mono" style="font-size:14px;color:var(--muted);">Python<span style="color:var(--accent);">.դաս</span></div>
-  <div class="mono" style="font-size:13px;color:var(--muted);">(շարունակելի)</div>
-</footer>
 
 <script>
 (function(){
@@ -497,21 +481,10 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
   });
 
   var progress = document.getElementById('progress');
-  var raf2 = null;
-  function onScroll(){
-    if (raf2) return;
-    raf2 = requestAnimationFrame(function(){
-      raf2 = null;
-      var max = document.documentElement.scrollHeight - window.innerHeight;
-      var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
-      progress.style.width = pct.toFixed(1) + '%';
-    });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
 
   function countUp(el){
     var target = parseInt(el.getAttribute('data-target'), 10);
+    el.textContent = '0';
     var start = performance.now();
     var duration = 1200;
     function tick(now){
@@ -523,56 +496,54 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
     requestAnimationFrame(tick);
   }
 
-  var revealObserver = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        var counter = entry.target.querySelector('.count');
-        if (counter) countUp(counter);
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-  document.querySelectorAll('.reveal').forEach(function(el){ revealObserver.observe(el); });
-
+  var SLIDES = ['hero', 'about', 'why', 'inside', 'lesson1', 'meet', 'test'];
+  var slideEls = SLIDES.map(function(id){ return document.getElementById(id); });
   var dotLinks = Array.prototype.slice.call(document.querySelectorAll('#dotnav a'));
-  var SECTION_IDS = ['hero', 'about', 'why', 'inside', 'lesson1', 'meet', 'test'];
-  var currentSectionId = SECTION_IDS[0];
-  var sectionObserver = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting) {
-        currentSectionId = entry.target.id;
-        var id = '#' + entry.target.id;
-        dotLinks.forEach(function(a){
-          a.classList.toggle('active', a.getAttribute('href') === id);
-        });
+  var currentIndex = 0;
+
+  function playSlide(el){
+    var reveals = el.querySelectorAll('.reveal');
+    reveals.forEach(function(r){ r.classList.remove('in'); });
+    var counters = el.querySelectorAll('.count');
+    counters.forEach(function(c){ c.textContent = '0'; });
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        reveals.forEach(function(r){ r.classList.add('in'); });
+        counters.forEach(function(c){ countUp(c); });
+      });
+    });
+  }
+
+  function showSlide(i){
+    i = Math.max(0, Math.min(SLIDES.length - 1, i));
+    slideEls.forEach(function(el, idx){
+      if (!el) return;
+      if (idx === i) {
+        el.classList.add('active');
+        el.scrollTop = 0;
+      } else {
+        el.classList.remove('active');
       }
     });
-  }, { threshold: 0.5 });
-  SECTION_IDS.forEach(function(id){
-    var el = document.getElementById(id);
-    if (el) sectionObserver.observe(el);
+    currentIndex = i;
+    dotLinks.forEach(function(a, idx){
+      a.classList.toggle('active', idx === i);
+    });
+    progress.style.width = (SLIDES.length > 1 ? (i / (SLIDES.length - 1)) * 100 : 0).toFixed(1) + '%';
+    var activeEl = slideEls[i];
+    if (activeEl) playSlide(activeEl);
+  }
+
+  window.goToSlide = function(i){ showSlide(i); };
+  window.nextSlide = function(){ showSlide(currentIndex + 1); };
+  window.prevSlide = function(){ showSlide(currentIndex - 1); };
+
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); window.nextSlide(); }
+    else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); window.prevSlide(); }
   });
 
-  function goToSection(dir){
-    var idx = SECTION_IDS.indexOf(currentSectionId);
-    if (idx === -1) idx = 0;
-    if (dir > 0) {
-      var curEl = document.getElementById(SECTION_IDS[idx]);
-      var arrow = curEl && curEl.querySelector('.scroll-hint');
-      if (arrow) { arrow.click(); return; }
-    } else {
-      var prevIdx = idx - 1;
-      if (prevIdx < 0) prevIdx = 0;
-      var dot = dotLinks[prevIdx];
-      if (dot) { dot.click(); return; }
-    }
-    var nextIdx = idx + dir;
-    if (nextIdx < 0) nextIdx = 0;
-    if (nextIdx > SECTION_IDS.length - 1) nextIdx = SECTION_IDS.length - 1;
-    var el = document.getElementById(SECTION_IDS[nextIdx]);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  showSlide(0);
 
   var canvas = document.getElementById('net');
   var ctx = canvas.getContext('2d');
@@ -644,11 +615,12 @@ h1,h2{font-weight:800;letter-spacing:-0.01em;margin:0;}
         try {
           var msg = JSON.parse(e.data);
           if (typeof msg.d === 'number') {
-            window.scrollBy({ top: msg.d, behavior: 'auto' });
+            var activeSlide = document.querySelector('.slide.active');
+            if (activeSlide) activeSlide.scrollBy({ top: msg.d, behavior: 'auto' });
           } else if (msg.nav === 'next') {
-            goToSection(1);
+            window.nextSlide();
           } else if (msg.nav === 'prev') {
-            goToSection(-1);
+            window.prevSlide();
           }
         } catch(err) { console.error('remote msg error', err); }
       };
